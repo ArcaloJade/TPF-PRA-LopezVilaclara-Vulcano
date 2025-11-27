@@ -1,0 +1,30 @@
+[0.472s] Invoking command in '/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_package': CONDA_PROMPT_MODIFIER=(rosenv) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_package/prefix_override:/home/facuvulcano/miniconda3/envs/rosenv/lib/python3.11/site-packages/colcon_core/task/python/colcon_distutils_commands:/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/lib/python3.11/site-packages:${PYTHONPATH} /home/facuvulcano/miniconda3/envs/rosenv/bin/python3.11 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_package/build --no-deps symlink_data
+[0.573s] /home/facuvulcano/miniconda3/envs/rosenv/lib/python3.11/site-packages/setuptools/_distutils/dist.py:289: UserWarning: Unknown distribution option: 'tests_require'
+[0.573s]   warnings.warn(msg)
+[0.641s] running develop
+[0.733s] running egg_info
+[0.740s] creating tpf_package.egg-info
+[0.740s] writing tpf_package.egg-info/PKG-INFO
+[0.740s] writing dependency_links to tpf_package.egg-info/dependency_links.txt
+[0.740s] writing entry points to tpf_package.egg-info/entry_points.txt
+[0.740s] writing requirements to tpf_package.egg-info/requires.txt
+[0.740s] writing top-level names to tpf_package.egg-info/top_level.txt
+[0.741s] writing manifest file 'tpf_package.egg-info/SOURCES.txt'
+[0.754s] reading manifest file 'tpf_package.egg-info/SOURCES.txt'
+[0.754s] writing manifest file 'tpf_package.egg-info/SOURCES.txt'
+[0.762s] running build_ext
+[0.771s] Creating /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/lib/python3.11/site-packages/tpf-package.egg-link (link to .)
+[0.772s] Installing explorer_node script to /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/lib/tpf_package
+[0.772s] Installing map_saver_node script to /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/lib/tpf_package
+[0.772s] Installing slam_node script to /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/lib/tpf_package
+[0.772s] 
+[0.772s] Installed /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_package
+[0.772s] running symlink_data
+[0.772s] creating /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/share/ament_index/resource_index/packages
+[0.772s] symbolically linking /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_package/resource/tpf_package -> /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/share/ament_index/resource_index/packages
+[0.772s] symbolically linking /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_package/package.xml -> /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/share/tpf_package
+[0.772s] creating /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/share/tpf_package/launch
+[0.772s] symbolically linking /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_package/launch/slam_launch.py -> /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/share/tpf_package/launch
+[0.772s] creating /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/share/tpf_package/config
+[0.772s] symbolically linking /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_package/config/slam_defaults.yaml -> /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/share/tpf_package/config
+[0.788s] Invoked command in '/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_package' returned '0': CONDA_PROMPT_MODIFIER=(rosenv) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_package/prefix_override:/home/facuvulcano/miniconda3/envs/rosenv/lib/python3.11/site-packages/colcon_core/task/python/colcon_distutils_commands:/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/lib/python3.11/site-packages:${PYTHONPATH} /home/facuvulcano/miniconda3/envs/rosenv/bin/python3.11 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_package/build --no-deps symlink_data

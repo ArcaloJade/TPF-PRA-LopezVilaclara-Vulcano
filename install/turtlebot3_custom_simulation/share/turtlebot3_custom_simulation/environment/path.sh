@@ -1,0 +1,1 @@
+/home/facuvulcano/miniconda3/envs/rosenv/share/ament_cmake_core/cmake/environment_hooks/environment/path.sh
