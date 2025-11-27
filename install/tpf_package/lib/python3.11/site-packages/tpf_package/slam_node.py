@@ -49,7 +49,7 @@ class GridSLAM(Node):
         
         # 1. PARAMETROS
         self.declare_parameters(namespace='', parameters=[
-            ('num_particles', 30),        # Menos particulas que en TP5 por costo computacional en Python
+            ('num_particles', 200),        # Menos particulas que en TP5 por costo computacional en Python
             ('resolution', 0.05),         # 5 cm por celda
             ('width', 400),
             ('height', 400),
