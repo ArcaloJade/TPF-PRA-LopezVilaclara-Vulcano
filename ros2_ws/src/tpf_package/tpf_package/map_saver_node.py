@@ -14,14 +14,12 @@ class MapSaver(Node):
 
     def __init__(self) -> None:
         super().__init__('map_saver_node')
-        self.declare_parameters(
-            namespace='',
-            parameters=[
-                ('use_sim_time', False),
-                ('map_path', '~/ros2_ws/maps/generated_map'),
-            ],
+        self.declare_parameters(namespace='', parameters=[])
+        self.map_path = (
+            str(self.get_parameter('map_path').value)
+            if self.has_parameter('map_path')
+            else '~/ros2_ws/maps/generated_map'
         )
-        self.map_path = str(self.get_parameter('map_path').value)
         self._latest_map: Optional[OccupancyGrid] = None
 
         self.create_subscription(OccupancyGrid, 'map', self.map_callback, 10)

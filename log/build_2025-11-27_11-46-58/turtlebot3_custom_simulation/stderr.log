@@ -1,3 +1,0 @@
-[0mCMake Error: The source directory "/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/ros2_ws/src/turtlebot3_custom_simulation (2)/turtlebot3_custom_simulation" does not exist.
-Specify --help for usage, or press the help button on the CMake GUI.[0m
-gmake: *** [Makefile:267: cmake_check_build_system] Error 1

@@ -25,7 +25,7 @@ AMENT_CMAKE_ENVIRONMENT_PARENT_PREFIX_PATH_GENERATION:BOOL=ON
 
 //Replace the CMake install command with a custom implementation
 // using symlinks instead of copying resources
-AMENT_CMAKE_SYMLINK_INSTALL:BOOL=1
+AMENT_CMAKE_SYMLINK_INSTALL:BOOL=OFF
 
 //Generate an uninstall target to revert the effects of the install
 // step
@@ -491,7 +491,7 @@ turtlebot3_custom_simulation_BINARY_DIR:STATIC=/home/facuvulcano/TPF-PRA-LopezVi
 turtlebot3_custom_simulation_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
-turtlebot3_custom_simulation_SOURCE_DIR:STATIC=/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/ros2_ws/src/turtlebot3_custom_simulation (2)/turtlebot3_custom_simulation
+turtlebot3_custom_simulation_SOURCE_DIR:STATIC=/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/ros2_ws/src/turtlebot3_custom_simulation (3)/turtlebot3_custom_simulation
 
 //The directory containing a CMake configuration file for turtlebot3_msgs.
 turtlebot3_msgs_DIR:PATH=/home/facuvulcano/miniconda3/envs/rosenv/share/turtlebot3_msgs/cmake
@@ -591,7 +591,7 @@ CMAKE_GENERATOR_TOOLSET:INTERNAL=
 CMAKE_HAVE_LIBC_PTHREAD:INTERNAL=1
 //Source directory with the top level CMakeLists.txt file for this
 // project
-CMAKE_HOME_DIRECTORY:INTERNAL=/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/ros2_ws/src/turtlebot3_custom_simulation (2)/turtlebot3_custom_simulation
+CMAKE_HOME_DIRECTORY:INTERNAL=/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/ros2_ws/src/turtlebot3_custom_simulation (3)/turtlebot3_custom_simulation
 //Install .so files without execute permission.
 CMAKE_INSTALL_SO_NO_EXE:INTERNAL=1
 //ADVANCED property for variable: CMAKE_LINKER
@@ -757,8 +757,6 @@ _Python3_INTERPRETER_PROPERTIES:INTERNAL=Python;3;12;3;64;32;;cpython-312-x86_64
 _Python3_INTERPRETER_SIGNATURE:INTERNAL=f811b8a062a8994e96ffe87747bf9bfe
 //NumPy reason failure
 _Python3_NumPy_REASON_FAILURE:INTERNAL=
-//Index for unique symlink install targets
-__AMENT_CMAKE_SYMLINK_INSTALL_TARGETS_INDEX:INTERNAL=1
 __pkg_config_arguments_YAML_PKG_CONFIG:INTERNAL=IMPORTED_TARGET;yaml-0.1
 __pkg_config_arguments__OPENSSL:INTERNAL=QUIET;openssl
 __pkg_config_checked_YAML_PKG_CONFIG:INTERNAL=1

@@ -1,0 +1,108 @@
+[0.213s] Invoking command in '/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/turtlebot3_custom_simulation': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package CONDA_PROMPT_MODIFIER=(rosenv) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /home/facuvulcano/miniconda3/envs/rosenv/bin/cmake /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/ros2_ws/src/turtlebot3_custom_simulation (3)/turtlebot3_custom_simulation -DCMAKE_INSTALL_PREFIX=/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation
+[0.258s] -- The C compiler identification is GNU 14.3.0
+[0.332s] -- The CXX compiler identification is GNU 14.3.0
+[0.347s] -- Detecting C compiler ABI info
+[0.418s] -- Detecting C compiler ABI info - done
+[0.429s] -- Check for working C compiler: /home/facuvulcano/miniconda3/envs/rosenv/bin/x86_64-conda-linux-gnu-cc - skipped
+[0.429s] -- Detecting C compile features
+[0.429s] -- Detecting C compile features - done
+[0.436s] -- Detecting CXX compiler ABI info
+[0.518s] -- Detecting CXX compiler ABI info - done
+[0.527s] -- Check for working CXX compiler: /home/facuvulcano/miniconda3/envs/rosenv/bin/x86_64-conda-linux-gnu-c++ - skipped
+[0.527s] -- Detecting CXX compile features
+[0.527s] -- Detecting CXX compile features - done
+[0.531s] -- Found ament_cmake: 1.3.7 (/home/facuvulcano/miniconda3/envs/rosenv/share/ament_cmake/cmake)
+[0.931s] -- Found Python3: /usr/bin/python3.12 (found version "3.12.3") found components: Interpreter 
+[1.011s] -- Found geometry_msgs: 4.2.3 (/home/facuvulcano/miniconda3/envs/rosenv/share/geometry_msgs/cmake)
+[1.050s] -- Found rosidl_generator_c: 3.1.5 (/home/facuvulcano/miniconda3/envs/rosenv/share/rosidl_generator_c/cmake)
+[1.057s] -- Found rosidl_adapter: 3.1.5 (/home/facuvulcano/miniconda3/envs/rosenv/share/rosidl_adapter/cmake)
+[1.069s] -- Found rosidl_generator_cpp: 3.1.5 (/home/facuvulcano/miniconda3/envs/rosenv/share/rosidl_generator_cpp/cmake)
+[1.083s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.106s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.201s] -- Found nav_msgs: 4.2.3 (/home/facuvulcano/miniconda3/envs/rosenv/share/nav_msgs/cmake)
+[1.260s] -- Found rclcpp: 16.0.8 (/home/facuvulcano/miniconda3/envs/rosenv/share/rclcpp/cmake)
+[1.330s] -- Checking for module 'yaml-0.1'
+[1.417s] --   Found yaml-0.1, version 0.2.5
+[1.717s] -- Found rmw_implementation_cmake: 6.1.1 (/home/facuvulcano/miniconda3/envs/rosenv/share/rmw_implementation_cmake/cmake)
+[1.720s] -- Found rmw_fastrtps_cpp: 6.2.6 (/home/facuvulcano/miniconda3/envs/rosenv/share/rmw_fastrtps_cpp/cmake)
+[2.095s] -- Found OpenSSL: /home/facuvulcano/miniconda3/envs/rosenv/lib/libcrypto.so (found version "3.5.4")  
+[2.124s] -- Found FastRTPS: /home/facuvulcano/miniconda3/envs/rosenv/include  
+[2.175s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[2.188s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[2.250s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+[2.251s] -- Found Threads: TRUE  
+[2.331s] -- Found sensor_msgs: 4.2.3 (/home/facuvulcano/miniconda3/envs/rosenv/share/sensor_msgs/cmake)
+[2.385s] -- Found tf2: 0.25.5 (/home/facuvulcano/miniconda3/envs/rosenv/share/tf2/cmake)
+[2.393s] -- Found tf2_msgs: 0.25.5 (/home/facuvulcano/miniconda3/envs/rosenv/share/tf2_msgs/cmake)
+[2.493s] -- Found turtlebot3_msgs: 2.2.3 (/home/facuvulcano/miniconda3/envs/rosenv/share/turtlebot3_msgs/cmake)
+[2.595s] -- Configuring done (2.4s)
+[2.603s] -- Generating done (0.0s)
+[2.604s] -- Build files have been written to: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/turtlebot3_custom_simulation
+[2.612s] Invoked command in '/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/turtlebot3_custom_simulation' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package CONDA_PROMPT_MODIFIER=(rosenv) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /home/facuvulcano/miniconda3/envs/rosenv/bin/cmake /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/ros2_ws/src/turtlebot3_custom_simulation (3)/turtlebot3_custom_simulation -DCMAKE_INSTALL_PREFIX=/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation
+[2.612s] Invoking command in '/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/turtlebot3_custom_simulation': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package CONDA_PROMPT_MODIFIER=(rosenv) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /home/facuvulcano/miniconda3/envs/rosenv/bin/cmake --build /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/turtlebot3_custom_simulation -- -j32 -l32
+[2.639s] [ 50%] [32mBuilding CXX object CMakeFiles/turtlebot3_custom_simulation.dir/src/turtlebot3_custom_simulation.cpp.o[0m
+[9.495s] [100%] [32m[1mLinking CXX executable turtlebot3_custom_simulation[0m
+[9.634s] [100%] Built target turtlebot3_custom_simulation
+[9.643s] Invoked command in '/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/turtlebot3_custom_simulation' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package CONDA_PROMPT_MODIFIER=(rosenv) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /home/facuvulcano/miniconda3/envs/rosenv/bin/cmake --build /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/turtlebot3_custom_simulation -- -j32 -l32
+[9.668s] Invoking command in '/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/turtlebot3_custom_simulation': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package CONDA_PROMPT_MODIFIER=(rosenv) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /home/facuvulcano/miniconda3/envs/rosenv/bin/cmake --install /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/turtlebot3_custom_simulation
+[9.673s] -- Install configuration: ""
+[9.673s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/lib/turtlebot3_custom_simulation/turtlebot3_custom_simulation
+[9.674s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/launch
+[9.674s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/launch/custom_room.launch.py
+[9.674s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/launch/custom_casa_obs2.launch.py
+[9.674s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/launch/custom_simulation.launch.py
+[9.674s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/launch/custom_maze.launch.py
+[9.674s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/launch/custom_casa.launch.py
+[9.674s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/launch/custom_casa_obs.launch.py
+[9.674s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/param
+[9.674s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/param/burger.yaml
+[9.674s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds
+[9.674s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/Walls
+[9.674s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/Walls/model.config
+[9.674s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/Walls/model.sdf
+[9.674s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/casa_obs.world
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/Suitcase2H
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/Suitcase2H/model.config
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/Suitcase2H/model.sdf
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/maze.world
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/map
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/map/map.pgm
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/map/map.yaml
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/HospitalBot
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/HospitalBot/model.config
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/HospitalBot/model.sdf
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/casa_o.world
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/Suitcase1
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/Suitcase1/model.config
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/Suitcase1/model.sdf
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/Armchair
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/Armchair/model.config
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/Armchair/model.sdf
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/slippery.world
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/casa.world
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/casa_obs2.world
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/Sofa
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/Sofa/model.config
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/Sofa/model.sdf
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/worlds/room.world
+[9.675s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/include/
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/include//turtlebot3_custom_simulation
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/include//turtlebot3_custom_simulation/turtlebot3_custom_simulation.hpp
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/ament_index/resource_index/package_run_dependencies/turtlebot3_custom_simulation
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/ament_index/resource_index/parent_prefix_path/turtlebot3_custom_simulation
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/environment/ament_prefix_path.sh
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/environment/ament_prefix_path.dsv
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/environment/path.sh
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/environment/path.dsv
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/local_setup.bash
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/local_setup.sh
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/local_setup.zsh
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/local_setup.dsv
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/package.dsv
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/ament_index/resource_index/packages/turtlebot3_custom_simulation
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/cmake/ament_cmake_export_include_directories-extras.cmake
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/cmake/ament_cmake_export_dependencies-extras.cmake
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/cmake/turtlebot3_custom_simulationConfig.cmake
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/cmake/turtlebot3_custom_simulationConfig-version.cmake
+[9.676s] -- Installing: /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/turtlebot3_custom_simulation/share/turtlebot3_custom_simulation/package.xml
+[9.677s] Invoked command in '/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/turtlebot3_custom_simulation' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package CONDA_PROMPT_MODIFIER=(rosenv) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /home/facuvulcano/miniconda3/envs/rosenv/bin/cmake --install /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/turtlebot3_custom_simulation

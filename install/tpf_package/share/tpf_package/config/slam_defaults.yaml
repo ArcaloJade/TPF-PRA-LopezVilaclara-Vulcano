@@ -6,6 +6,7 @@ slam_node:
     height: 400
     origin_x: -10.0
     origin_y: -10.0
+    odom_topic: calc_odom
     occupied_log: 0.85
     free_log: -0.4
     log_min: -5.0

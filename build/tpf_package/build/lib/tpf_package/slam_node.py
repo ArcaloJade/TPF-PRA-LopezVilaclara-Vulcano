@@ -57,6 +57,7 @@ class GridSLAM(Node):
             ('origin_y', -10.0),
             # Alphas del TP5 para el modelo de movimiento
             ('motion_alphas', [0.1, 0.1, 0.05, 0.05]), 
+            ('odom_topic', 'calc_odom'),
         ])
 
         # Configuración del mapa
@@ -87,7 +88,12 @@ class GridSLAM(Node):
         self.pose_pub = self.create_publisher(PoseStamped, 'belief', 1)
         self.tf_broadcaster = TransformBroadcaster(self)
         
-        self.create_subscription(Odometry, 'calc_odom', self.odom_callback, 10)
+        self.create_subscription(
+            Odometry,
+            str(self.get_parameter('odom_topic').value),
+            self.odom_callback,
+            10,
+        )
         self.create_subscription(LaserScan, 'scan', self.scan_callback, 10)
         
         # Timer para publicar mapa (1 Hz para no saturar)

@@ -1,1 +1,0 @@
-/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/ros2_ws/src/turtlebot3_custom_simulation (2)/turtlebot3_custom_simulation/launch/custom_casa_obs.launch copy.py
