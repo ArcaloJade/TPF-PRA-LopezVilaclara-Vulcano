@@ -110,6 +110,7 @@ class PathFollower(Node):
         self.replan_cooldown = Duration(seconds=1.0)
         self.state = 'IDLE'  # IDLE, FOLLOWING, OBSTACLE, AT_GOAL
         self.obstacle_turn_dir = 1.0
+        self.pending_replan_after_clear = False
 
         self.get_logger().info('Controller listo, esperando plan global.')
 
@@ -184,11 +185,18 @@ class PathFollower(Node):
                 self.state = 'OBSTACLE'
                 self.obstacle_turn_dir *= -1.0  # alterna sentido
                 self.trigger_replan('Obstaculo cerca')
+            # mientras está bloqueado, replan con cooldown
+            self.pending_replan_after_clear = True
+            self.trigger_replan('Obstaculo persiste')
             cmd = Twist()
             cmd.angular.z = self.obstacle_turn_speed * self.obstacle_turn_dir
             self.cmd_pub.publish(cmd)
             return
         if self.state == 'OBSTACLE' and obstacle_cleared:
+            # al despejar, forzar un replan fresco
+            if self.pending_replan_after_clear:
+                self.trigger_replan('Obstaculo despejado, replan')
+            self.pending_replan_after_clear = False
             self.state = 'FOLLOWING'
 
         if nearest_dist > self.replan_distance_threshold or abs(heading) > self.replan_angle_threshold:

@@ -50,6 +50,7 @@ controller_node:
     obstacle_stop_distance: 0.20
     obstacle_clear_distance: 0.28
     obstacle_turn_speed: 0.4
+    obstacle_front_angle: 0.8
     replan_distance_threshold: 0.25
     replan_angle_threshold: 0.6
     k_angular: 1.6

@@ -36,6 +36,7 @@ class PathFollower(Node):
             ('obstacle_stop_distance', 0.25),
             ('obstacle_clear_distance', 0.3),
             ('obstacle_turn_speed', 0.4),
+            ('obstacle_front_angle', 0.8),
             ('replan_distance_threshold', 0.25),
             ('replan_angle_threshold', 0.6),
             ('k_angular', 1.6),
@@ -75,6 +76,9 @@ class PathFollower(Node):
         self.obstacle_turn_speed = float(
             self.get_parameter('obstacle_turn_speed').value
         )
+        self.obstacle_front_angle = float(
+            self.get_parameter('obstacle_front_angle').value
+        )
         self.replan_distance_threshold = float(
             self.get_parameter('replan_distance_threshold').value
         )
@@ -106,10 +110,12 @@ class PathFollower(Node):
         self.current_pose: Optional[Tuple[float, float, float]] = None
         self.path_points: List[Tuple[float, float, float]] = []
         self.last_min_range: Optional[float] = None
+        self.last_min_front: Optional[float] = None
         self.last_replan_msg_time = self.get_clock().now()
         self.replan_cooldown = Duration(seconds=1.0)
         self.state = 'IDLE'  # IDLE, FOLLOWING, OBSTACLE, AT_GOAL
         self.obstacle_turn_dir = 1.0
+        self.pending_replan_after_clear = False
 
         self.get_logger().info('Controller listo, esperando plan global.')
 
@@ -135,6 +141,17 @@ class PathFollower(Node):
     def scan_callback(self, msg: LaserScan) -> None:
         valid = [r for r in msg.ranges if math.isfinite(r)]
         self.last_min_range = min(valid) if valid else None
+
+        # Solo consideramos el cono frontal para evitar frenar por paredes laterales.
+        half_angle = self.obstacle_front_angle * 0.5
+        front_vals = []
+        for i, r in enumerate(msg.ranges):
+            if not math.isfinite(r):
+                continue
+            angle = msg.angle_min + i * msg.angle_increment
+            if -half_angle <= angle <= half_angle:
+                front_vals.append(r)
+        self.last_min_front = min(front_vals) if front_vals else None
 
     # ------------------------------------------------------------------
     def control_loop(self) -> None:
@@ -167,16 +184,16 @@ class PathFollower(Node):
         target_dist = math.hypot(tx - x, ty - y)
 
         obstacle_close = (
-            self.last_min_range is not None
-            and self.last_min_range < self.obstacle_stop_distance
+            self.last_min_front is not None
+            and self.last_min_front < self.obstacle_stop_distance
         )
         obstacle_blocking = (
-            self.last_min_range is not None
-            and self.last_min_range < self.obstacle_clear_distance
+            self.last_min_front is not None
+            and self.last_min_front < self.obstacle_clear_distance
         )
         obstacle_cleared = (
-            self.last_min_range is None
-            or self.last_min_range > self.obstacle_clear_distance
+            self.last_min_front is None
+            or self.last_min_front > self.obstacle_clear_distance
         )
 
         if obstacle_close or (self.state == 'OBSTACLE' and obstacle_blocking):
@@ -184,11 +201,18 @@ class PathFollower(Node):
                 self.state = 'OBSTACLE'
                 self.obstacle_turn_dir *= -1.0  # alterna sentido
                 self.trigger_replan('Obstaculo cerca')
+            # mientras está bloqueado, replan con cooldown
+            self.pending_replan_after_clear = True
+            self.trigger_replan('Obstaculo persiste')
             cmd = Twist()
             cmd.angular.z = self.obstacle_turn_speed * self.obstacle_turn_dir
             self.cmd_pub.publish(cmd)
             return
         if self.state == 'OBSTACLE' and obstacle_cleared:
+            # al despejar, forzar un replan fresco
+            if self.pending_replan_after_clear:
+                self.trigger_replan('Obstaculo despejado, replan')
+            self.pending_replan_after_clear = False
             self.state = 'FOLLOWING'
 
         if nearest_dist > self.replan_distance_threshold or abs(heading) > self.replan_angle_threshold:
