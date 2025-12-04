@@ -4,7 +4,7 @@ import math
 from typing import List, Optional, Tuple
 
 import rclpy
-from geometry_msgs.msg import PoseWithCovarianceStamped, Twist
+from geometry_msgs.msg import PointStamped, PoseWithCovarianceStamped, Twist
 from nav_msgs.msg import Path
 from rclpy.duration import Duration
 from rclpy.node import Node
@@ -28,14 +28,19 @@ class PathFollower(Node):
         super().__init__('controller_node')
         defaults = [
             ('use_sim_time', False),
-            ('max_linear_speed', 0.2),
+            ('max_linear_speed', 0.1),
             ('max_angular_speed', 1.2),
-            ('lookahead_distance', 0.35),
+            ('lookahead_distance', 0.25),
             ('goal_tolerance', 0.12),
             ('angle_tolerance', 0.25),
-            ('obstacle_stop_distance', 0.25),
-            ('obstacle_clear_distance', 0.3),
+            ('obstacle_stop_distance', 0.5),
+            ('obstacle_clear_distance', 0.6),
             ('obstacle_turn_speed', 0.4),
+            ('obstacle_front_angle', 0.8),
+            ('obstacle_stuck_time', 2.0),
+            ('obstacle_avoid_speed', 0.05),
+            ('obstacle_mark_cooldown', 0.5),
+            ('obstacle_publish_step', 5),
             ('replan_distance_threshold', 0.25),
             ('replan_angle_threshold', 0.6),
             ('k_angular', 1.6),
@@ -75,6 +80,21 @@ class PathFollower(Node):
         self.obstacle_turn_speed = float(
             self.get_parameter('obstacle_turn_speed').value
         )
+        self.obstacle_front_angle = float(
+            self.get_parameter('obstacle_front_angle').value
+        )
+        self.obstacle_stuck_time = float(
+            self.get_parameter('obstacle_stuck_time').value
+        )
+        self.obstacle_avoid_speed = float(
+            self.get_parameter('obstacle_avoid_speed').value
+        )
+        self.obstacle_mark_cooldown = float(
+            self.get_parameter('obstacle_mark_cooldown').value
+        )
+        self.obstacle_publish_step = int(
+            self.get_parameter('obstacle_publish_step').value
+        )
         self.replan_distance_threshold = float(
             self.get_parameter('replan_distance_threshold').value
         )
@@ -94,6 +114,9 @@ class PathFollower(Node):
 
         self.cmd_pub = self.create_publisher(Twist, self.cmd_topic, 10)
         self.replan_pub = self.create_publisher(Bool, self.replan_topic, 1)
+        self.obstacle_pub = self.create_publisher(
+            PointStamped, 'dynamic_obstacle', 10
+        )
         self.create_subscription(Path, self.path_topic, self.path_callback, 1)
         self.create_subscription(
             PoseWithCovarianceStamped, self.pose_topic, self.pose_callback, 10
@@ -106,11 +129,17 @@ class PathFollower(Node):
         self.current_pose: Optional[Tuple[float, float, float]] = None
         self.path_points: List[Tuple[float, float, float]] = []
         self.last_min_range: Optional[float] = None
+        self.last_min_front: Optional[float] = None
+        self.last_min_front_angle: Optional[float] = None
+        self.front_hits: List[Tuple[float, float]] = []
         self.last_replan_msg_time = self.get_clock().now()
         self.replan_cooldown = Duration(seconds=1.0)
         self.state = 'IDLE'  # IDLE, FOLLOWING, OBSTACLE, AT_GOAL
         self.obstacle_turn_dir = 1.0
         self.pending_replan_after_clear = False
+        self.obstacle_enter_time = self.get_clock().now()
+        self.last_obstacle_pub_time = self.get_clock().now()
+        self.awaiting_plan = False
 
         self.get_logger().info('Controller listo, esperando plan global.')
 
@@ -130,12 +159,36 @@ class PathFollower(Node):
             self.get_logger().info(
                 f'Recibido plan con {len(self.path_points)} puntos.'
             )
+            if self.awaiting_plan:
+                # Esperaba un plan tras obstáculo
+                self.awaiting_plan = False
             if self.state != 'OBSTACLE':
                 self.state = 'FOLLOWING'
 
     def scan_callback(self, msg: LaserScan) -> None:
         valid = [r for r in msg.ranges if math.isfinite(r)]
         self.last_min_range = min(valid) if valid else None
+
+        # Solo consideramos el cono frontal para evitar frenar por paredes laterales.
+        half_angle = self.obstacle_front_angle * 0.5
+        front_vals = []
+        front_angles = []
+        self.front_hits = []
+        for i, r in enumerate(msg.ranges):
+            if not math.isfinite(r):
+                continue
+            angle = msg.angle_min + i * msg.angle_increment
+            if -half_angle <= angle <= half_angle:
+                front_vals.append(r)
+                front_angles.append(angle)
+                if r < self.obstacle_clear_distance:
+                    self.front_hits.append((r, angle))
+        self.last_min_front = min(front_vals) if front_vals else None
+        if front_vals:
+            min_idx = front_vals.index(self.last_min_front)
+            self.last_min_front_angle = front_angles[min_idx]
+        else:
+            self.last_min_front_angle = None
 
     # ------------------------------------------------------------------
     def control_loop(self) -> None:
@@ -168,34 +221,45 @@ class PathFollower(Node):
         target_dist = math.hypot(tx - x, ty - y)
 
         obstacle_close = (
-            self.last_min_range is not None
-            and self.last_min_range < self.obstacle_stop_distance
+            self.last_min_front is not None
+            and self.last_min_front < self.obstacle_stop_distance
         )
         obstacle_blocking = (
-            self.last_min_range is not None
-            and self.last_min_range < self.obstacle_clear_distance
+            self.last_min_front is not None
+            and self.last_min_front < self.obstacle_clear_distance
         )
         obstacle_cleared = (
-            self.last_min_range is None
-            or self.last_min_range > self.obstacle_clear_distance
+            self.last_min_front is None
+            or self.last_min_front > self.obstacle_clear_distance
         )
 
-        if obstacle_close or (self.state == 'OBSTACLE' and obstacle_blocking):
+        if obstacle_close or (self.state in ('OBSTACLE', 'WAIT_REPLAN') and obstacle_blocking):
             if self.state != 'OBSTACLE':
                 self.state = 'OBSTACLE'
                 self.obstacle_turn_dir *= -1.0  # alterna sentido
+                self.obstacle_enter_time = self.get_clock().now()
+                self.awaiting_plan = True
+                self.publish_obstacle_points()
                 self.trigger_replan('Obstaculo cerca')
-            # mientras está bloqueado, replan con cooldown
-            self.pending_replan_after_clear = True
-            self.trigger_replan('Obstaculo persiste')
+            else:
+                self.publish_obstacle_points()
+                if self.awaiting_plan:
+                    self.trigger_replan('Obstaculo persiste')
+            # esperar nuevo plan: no avanzar hasta que llegue plan y se despeje
             cmd = Twist()
             cmd.angular.z = self.obstacle_turn_speed * self.obstacle_turn_dir
+            if (self.get_clock().now() - self.obstacle_enter_time).nanoseconds / 1e9 > self.obstacle_stuck_time:
+                cmd.linear.x = self.obstacle_avoid_speed
             self.cmd_pub.publish(cmd)
             return
-        if self.state == 'OBSTACLE' and obstacle_cleared:
-            # al despejar, forzar un replan fresco
-            if self.pending_replan_after_clear:
-                self.trigger_replan('Obstaculo despejado, replan')
+        if self.state in ('OBSTACLE', 'WAIT_REPLAN') and obstacle_cleared:
+            if self.awaiting_plan:
+                # esperamos a recibir plan nuevo antes de seguir
+                self.state = 'WAIT_REPLAN'
+                self.cmd_pub.publish(Twist())
+                return
+            # al despejar y con plan en mano, replan de refuerzo
+            self.trigger_replan('Obstaculo despejado, replan')
             self.pending_replan_after_clear = False
             self.state = 'FOLLOWING'
 
@@ -232,6 +296,38 @@ class PathFollower(Node):
         self.last_replan_msg_time = now
         self.get_logger().info(f'Solicitando replan: {reason}')
         self.replan_pub.publish(Bool(data=True))
+
+    def publish_obstacle_points(self) -> None:
+        if self.current_pose is None:
+            return
+        now = self.get_clock().now()
+        if now - self.last_obstacle_pub_time < Duration(seconds=self.obstacle_mark_cooldown):
+            return
+        self.last_obstacle_pub_time = now
+        x, y, yaw = self.current_pose
+        hits = (
+            self.front_hits
+            if self.front_hits
+            else (
+                [(self.last_min_front, self.last_min_front_angle)]
+                if self.last_min_front is not None and self.last_min_front_angle is not None
+                else []
+            )
+        )
+        step = max(1, self.obstacle_publish_step)
+        for idx, (dist, rel_ang) in enumerate(hits):
+            if idx % step != 0:
+                continue
+            ang = yaw + rel_ang
+            px = x + dist * math.cos(ang)
+            py = y + dist * math.sin(ang)
+            msg = PointStamped()
+            msg.header.stamp = now.to_msg()
+            msg.header.frame_id = 'map'
+            msg.point.x = px
+            msg.point.y = py
+            msg.point.z = 0.0
+            self.obstacle_pub.publish(msg)
 
 
 def main(args=None) -> None:

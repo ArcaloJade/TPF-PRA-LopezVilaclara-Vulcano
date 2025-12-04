@@ -11,6 +11,7 @@ from geometry_msgs.msg import (
     PoseWithCovarianceStamped,
     Quaternion,
 )
+from geometry_msgs.msg import PointStamped
 from nav_msgs.msg import OccupancyGrid, Path
 from rclpy.node import Node
 from std_msgs.msg import Bool
@@ -47,6 +48,9 @@ class AStarPlanner(Node):
             ('map_topic', '/map'),
             ('path_topic', '/plan'),
             ('replan_topic', '/replan'),
+            ('dynamic_obstacle_radius', 0.25),
+            ('dynamic_obstacle_timeout', 5.0),
+            ('dynamic_map_topic', 'dynamic_obstacle_map'),
         ]
         for name, default in defaults:
             if not self.has_parameter(name):
@@ -72,8 +76,15 @@ class AStarPlanner(Node):
         self.current_pose: Optional[PoseWithCovarianceStamped] = None
         self.goal_pose: Optional[PoseStamped] = None
         self.need_plan = False
+        self.dynamic_obstacles: List[Tuple[float, float, float]] = []  # x, y, expiry
+        self.dynamic_map_dirty = False
 
         self.path_pub = self.create_publisher(Path, self.path_topic, 1)
+        self.dynamic_map_pub = self.create_publisher(
+            OccupancyGrid,
+            str(self.get_parameter('dynamic_map_topic').value),
+            1,
+        )
         self.create_subscription(
             OccupancyGrid, self.map_topic, self.map_callback, 1
         )
@@ -84,6 +95,9 @@ class AStarPlanner(Node):
             PoseStamped, self.goal_topic, self.goal_callback, 10
         )
         self.create_subscription(Bool, self.replan_topic, self.replan_callback, 1)
+        self.create_subscription(
+            PointStamped, 'dynamic_obstacle', self.dynamic_obstacle_callback, 10
+        )
         self.create_timer(self.plan_period, self.timer_callback)
 
         self.get_logger().info('Planner A* listo; esperando /goal_pose.')
@@ -121,7 +135,21 @@ class AStarPlanner(Node):
         if msg.data:
             self.need_plan = True
 
+    def dynamic_obstacle_callback(self, msg: PointStamped) -> None:
+        radius = float(self.get_parameter('dynamic_obstacle_radius').value)
+        timeout = float(self.get_parameter('dynamic_obstacle_timeout').value)
+        expiry = self.get_clock().now().nanoseconds / 1e9 + timeout
+        self.dynamic_obstacles.append((msg.point.x, msg.point.y, expiry))
+        # mantengo lista corta
+        self._prune_dynamic_obstacles()
+        self.dynamic_map_dirty = True
+        # forzar replan inmediato al incorporar obstaculo dinamico
+        self.need_plan = True
+        self.publish_dynamic_map()
+
     def timer_callback(self) -> None:
+        if self.dynamic_map_dirty:
+            self.publish_dynamic_map()
         if not self.need_plan:
             return
         if (
@@ -297,6 +325,7 @@ class AStarPlanner(Node):
     def is_cell_free(self, mx: int, my: int) -> bool:
         if self.map_info is None or self.map_data is None:
             return False
+        self._prune_dynamic_obstacles()
         width, height, res, _, _, _ = self.map_info
         if mx < 0 or mx >= width or my < 0 or my >= height:
             return False
@@ -319,7 +348,54 @@ class AStarPlanner(Node):
                     continue
                 if self.map_data[self.idx(nx, ny)] >= self.obstacle_threshold:
                     return False
+        # Check dynamic obstacles
+        if self.dynamic_obstacles:
+            radius = float(self.get_parameter('dynamic_obstacle_radius').value)
+            cx = self.map_info[3] + (mx + 0.5) * res
+            cy = self.map_info[4] + (my + 0.5) * res
+            for ox, oy, _ in self.dynamic_obstacles:
+                if (cx - ox) ** 2 + (cy - oy) ** 2 <= radius * radius:
+                    return False
         return True
+
+    def _prune_dynamic_obstacles(self) -> None:
+        now_s = self.get_clock().now().nanoseconds / 1e9
+        new_list = [(x, y, t) for (x, y, t) in self.dynamic_obstacles if t > now_s]
+        if len(new_list) != len(self.dynamic_obstacles):
+            self.dynamic_map_dirty = True
+        self.dynamic_obstacles = new_list
+
+    def publish_dynamic_map(self) -> None:
+        if self.map_info is None or self.map_data is None:
+            return
+        self.dynamic_map_dirty = False
+        width, height, res, ox, oy, frame_id = self.map_info
+        grid = OccupancyGrid()
+        grid.header.stamp = self.get_clock().now().to_msg()
+        grid.header.frame_id = frame_id
+        grid.info.width = width
+        grid.info.height = height
+        grid.info.resolution = res
+        grid.info.origin.position.x = ox
+        grid.info.origin.position.y = oy
+        grid.info.origin.orientation = Quaternion(w=1.0)
+        data = np.full(width * height, -1, dtype=np.int8)
+        if self.dynamic_obstacles:
+            radius = float(self.get_parameter('dynamic_obstacle_radius').value)
+            rad_cells = max(1, int(math.ceil(radius / res)))
+            for oxp, oyp, _ in self.dynamic_obstacles:
+                mx = int((oxp - ox) / res)
+                my = int((oyp - oy) / res)
+                for dx in range(-rad_cells, rad_cells + 1):
+                    for dy in range(-rad_cells, rad_cells + 1):
+                        if dx * dx + dy * dy > rad_cells * rad_cells:
+                            continue
+                        cx, cy = mx + dx, my + dy
+                        if cx < 0 or cy < 0 or cx >= width or cy >= height:
+                            continue
+                        data[cy * width + cx] = 100
+        grid.data = data.tolist()
+        self.dynamic_map_pub.publish(grid)
 
     def idx(self, x: int, y: int) -> int:
         width = self.map_info[0] if self.map_info else 0
