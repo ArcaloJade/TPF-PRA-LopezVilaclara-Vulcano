@@ -23,4 +23,4 @@ explorer_node:
 map_saver_node:
   ros__parameters:
     use_sim_time: true
-    map_path: ~/ros2_ws/maps/generated_map
+    map_path: ~/TPF-PRA-LopezVilaclara-Vulcano/maps/generated_map

@@ -9,6 +9,11 @@ from rclpy.node import Node
 from std_srvs.srv import Empty
 
 
+DEFAULT_MAP_PATH = str(
+    Path.home() / 'TPF-PRA-LopezVilaclara-Vulcano' / 'maps' / 'generated_map'
+)
+
+
 class MapSaver(Node):
     """Escucha /map y expone el servicio save_map para volcarlo a disco."""
 
@@ -18,7 +23,7 @@ class MapSaver(Node):
         self.map_path = (
             str(self.get_parameter('map_path').value)
             if self.has_parameter('map_path')
-            else '~/ros2_ws/maps/generated_map'
+            else DEFAULT_MAP_PATH
         )
         self._latest_map: Optional[OccupancyGrid] = None
 

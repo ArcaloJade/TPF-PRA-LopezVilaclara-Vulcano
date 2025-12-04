@@ -35,7 +35,7 @@ planner_node:
 map_loader_node:
   ros__parameters:
     use_sim_time: true
-    map_yaml: ~/ros2_ws/maps/generated_map.yaml
+    map_yaml: ~/TPF-PRA-LopezVilaclara-Vulcano/maps/generated_map.yaml
     frame_id: map
     publish_rate: 1.0
 

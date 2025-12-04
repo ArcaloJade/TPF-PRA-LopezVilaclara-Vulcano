@@ -17,7 +17,9 @@ def generate_launch_description():
 
     pkg_share = get_package_share_directory('tpf_navigation')
     default_params = os.path.join(pkg_share, 'config', 'navigation_params.yaml')
-    default_map = os.path.expanduser('~/ros2_ws/maps/generated_map.yaml')
+    default_map = os.path.expanduser(
+        '~/TPF-PRA-LopezVilaclara-Vulcano/maps/generated_map.yaml'
+    )
 
     return LaunchDescription(
         [

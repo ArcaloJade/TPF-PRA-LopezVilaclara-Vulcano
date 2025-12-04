@@ -16,6 +16,11 @@ from rclpy.qos import (
 )
 
 
+DEFAULT_MAP_YAML = str(
+    Path.home() / 'TPF-PRA-LopezVilaclara-Vulcano' / 'maps' / 'generated_map.yaml'
+)
+
+
 class MapLoader(Node):
     def __init__(self) -> None:
         super().__init__('map_loader_node')
@@ -23,7 +28,7 @@ class MapLoader(Node):
             namespace='',
             parameters=[
                 ('use_sim_time', False),
-                ('map_yaml', '~/ros2_ws/maps/generated_map.yaml'),
+                ('map_yaml', DEFAULT_MAP_YAML),
                 ('frame_id', 'map'),
                 ('publish_rate', 1.0),
             ],

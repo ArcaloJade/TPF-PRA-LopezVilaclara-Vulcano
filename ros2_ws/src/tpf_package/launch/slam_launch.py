@@ -1,10 +1,12 @@
-import os
-
-from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import (
+    EnvironmentVariable,
+    LaunchConfiguration,
+    PathJoinSubstitution,
+)
+from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
 
 
@@ -15,9 +17,9 @@ def generate_launch_description():
     map_output = LaunchConfiguration('map_output')
     rviz_config = LaunchConfiguration('rviz_config')
 
-    pkg_share = get_package_share_directory('tpf_package')
-    default_params = os.path.join(pkg_share, 'config', 'slam_defaults.yaml')
-    default_rviz_config = os.path.join(pkg_share, 'rviz', 'slam_config.rviz')
+    pkg_share = FindPackageShare('tpf_package')
+    default_params = PathJoinSubstitution([pkg_share, 'config', 'slam_defaults.yaml'])
+    default_rviz_config = PathJoinSubstitution([pkg_share, 'rviz', 'slam_config.rviz'])
 
     return LaunchDescription([
         DeclareLaunchArgument(
@@ -34,7 +36,12 @@ def generate_launch_description():
             description='Archivo YAML con parametros para los nodos'),
         DeclareLaunchArgument(
             'map_output',
-            default_value='~/ros2_ws/maps/generated_map',
+            default_value=PathJoinSubstitution([
+                EnvironmentVariable('HOME'),
+                'TPF-PRA-LopezVilaclara-Vulcano',
+                'maps',
+                'generated_map',
+            ]),
             description='Ruta base (sin extension) para guardar el mapa'),
         DeclareLaunchArgument(
             'rviz_config',
