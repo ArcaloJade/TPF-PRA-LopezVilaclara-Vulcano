@@ -50,28 +50,28 @@ class ParticleLocalization(Node):
 
     def __init__(self) -> None:
         super().__init__('localization_node')
-        self.declare_parameters(
-            namespace='',
-            parameters=[
-                ('use_sim_time', False),
-                ('num_particles', 250),
-                ('motion_alphas', [0.15, 0.05, 0.1, 0.05]),
-                ('scan_step', 8),
-                ('hit_bonus', 2.0),
-                ('miss_penalty', 1.0),
-                ('weight_scale', 0.35),
-                ('min_weight', 1.0e-6),
-                ('occ_threshold', 50),
-                ('initial_std_xy', 0.15),
-                ('initial_std_theta', 0.35),
-                ('map_frame', 'map'),
-                ('odom_frame', 'odom'),
-                ('base_frame', 'base_footprint'),
-                ('scan_topic', 'scan'),
-                ('odom_topic', 'calc_odom'),
-                ('map_topic', 'map'),
-            ],
-        )
+        defaults = [
+            ('use_sim_time', False),
+            ('num_particles', 250),
+            ('motion_alphas', [0.15, 0.05, 0.1, 0.05]),
+            ('scan_step', 8),
+            ('hit_bonus', 2.0),
+            ('miss_penalty', 1.0),
+            ('weight_scale', 0.35),
+            ('min_weight', 1.0e-6),
+            ('occ_threshold', 50),
+            ('initial_std_xy', 0.15),
+            ('initial_std_theta', 0.35),
+            ('map_frame', 'map'),
+            ('odom_frame', 'odom'),
+            ('base_frame', 'base_footprint'),
+            ('scan_topic', 'scan'),
+            ('odom_topic', 'calc_odom'),
+            ('map_topic', 'map'),
+        ]
+        for name, default in defaults:
+            if not self.has_parameter(name):
+                self.declare_parameter(name, default)
 
         self.num_particles = int(self.get_parameter('num_particles').value)
         self.motion_alphas = list(self.get_parameter('motion_alphas').value)

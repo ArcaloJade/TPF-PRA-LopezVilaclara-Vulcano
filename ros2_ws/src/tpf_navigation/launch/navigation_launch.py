@@ -4,8 +4,9 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
@@ -19,6 +20,9 @@ def generate_launch_description():
     default_params = os.path.join(pkg_share, 'config', 'navigation_params.yaml')
     default_map = os.path.expanduser(
         '~/TPF-PRA-LopezVilaclara-Vulcano/maps/generated_map.yaml'
+    )
+    default_rviz = PathJoinSubstitution(
+        [FindPackageShare('tpf_package'), 'rviz', 'slam_config.rviz']
     )
 
     return LaunchDescription(
@@ -40,12 +44,12 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 'enable_rviz',
-                default_value='false',
-                description='Levantar RViz para debug',
+                default_value='true',
+                description='Levantar RViz para ver mapa/poses',
             ),
             DeclareLaunchArgument(
                 'rviz_config',
-                default_value='',
+                default_value=default_rviz,
                 description='Config RViz (opcional)',
             ),
             Node(

@@ -24,15 +24,15 @@ DEFAULT_MAP_YAML = str(
 class MapLoader(Node):
     def __init__(self) -> None:
         super().__init__('map_loader_node')
-        self.declare_parameters(
-            namespace='',
-            parameters=[
-                ('use_sim_time', False),
-                ('map_yaml', DEFAULT_MAP_YAML),
-                ('frame_id', 'map'),
-                ('publish_rate', 1.0),
-            ],
-        )
+        defaults = [
+            ('use_sim_time', False),
+            ('map_yaml', DEFAULT_MAP_YAML),
+            ('frame_id', 'map'),
+            ('publish_rate', 1.0),
+        ]
+        for name, default in defaults:
+            if not self.has_parameter(name):
+                self.declare_parameter(name, default)
 
         self.map_yaml_path = Path(
             str(self.get_parameter('map_yaml').value)

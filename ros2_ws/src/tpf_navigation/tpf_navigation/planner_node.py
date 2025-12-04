@@ -35,22 +35,22 @@ def quaternion_from_yaw(yaw: float) -> Quaternion:
 class AStarPlanner(Node):
     def __init__(self) -> None:
         super().__init__('planner_node')
-        self.declare_parameters(
-            namespace='',
-            parameters=[
-                ('use_sim_time', False),
-                ('obstacle_threshold', 50),
-                ('inflation_radius', 0.15),
-                ('connect_8', True),
-                ('max_search_m', 25.0),
-                ('plan_rate', 1.0),
-                ('pose_topic', '/amcl_pose'),
-                ('goal_topic', '/goal_pose'),
-                ('map_topic', '/map'),
-                ('path_topic', '/plan'),
-                ('replan_topic', '/replan'),
-            ],
-        )
+        defaults = [
+            ('use_sim_time', False),
+            ('obstacle_threshold', 50),
+            ('inflation_radius', 0.15),
+            ('connect_8', True),
+            ('max_search_m', 25.0),
+            ('plan_rate', 1.0),
+            ('pose_topic', '/amcl_pose'),
+            ('goal_topic', '/goal_pose'),
+            ('map_topic', '/map'),
+            ('path_topic', '/plan'),
+            ('replan_topic', '/replan'),
+        ]
+        for name, default in defaults:
+            if not self.has_parameter(name):
+                self.declare_parameter(name, default)
 
         self.obstacle_threshold = int(
             self.get_parameter('obstacle_threshold').value
@@ -302,7 +302,8 @@ class AStarPlanner(Node):
             return False
         idx = self.idx(mx, my)
         cell = self.map_data[idx]
-        if cell == -1 or cell >= self.obstacle_threshold:
+        # Consider unknown (-1) as free to allow plan start/goal in zonas no mapeadas.
+        if cell >= self.obstacle_threshold:
             return False
         if self.inflation_radius <= 0.0:
             return True

@@ -26,28 +26,30 @@ def yaw_from_quaternion(q) -> float:
 class PathFollower(Node):
     def __init__(self) -> None:
         super().__init__('controller_node')
-        self.declare_parameters(
-            namespace='',
-            parameters=[
-                ('use_sim_time', False),
-                ('max_linear_speed', 0.2),
-                ('max_angular_speed', 1.2),
-                ('lookahead_distance', 0.35),
-                ('goal_tolerance', 0.12),
-                ('angle_tolerance', 0.25),
-                ('obstacle_stop_distance', 0.25),
-                ('replan_distance_threshold', 0.25),
-                ('replan_angle_threshold', 0.6),
-                ('k_angular', 1.6),
-                ('k_linear', 0.6),
-                ('control_rate', 20.0),
-                ('path_topic', '/plan'),
-                ('pose_topic', '/amcl_pose'),
-                ('cmd_topic', '/cmd_vel'),
-                ('scan_topic', '/scan'),
-                ('replan_topic', '/replan'),
-            ],
-        )
+        defaults = [
+            ('use_sim_time', False),
+            ('max_linear_speed', 0.2),
+            ('max_angular_speed', 1.2),
+            ('lookahead_distance', 0.35),
+            ('goal_tolerance', 0.12),
+            ('angle_tolerance', 0.25),
+            ('obstacle_stop_distance', 0.25),
+            ('obstacle_clear_distance', 0.3),
+            ('obstacle_turn_speed', 0.4),
+            ('replan_distance_threshold', 0.25),
+            ('replan_angle_threshold', 0.6),
+            ('k_angular', 1.6),
+            ('k_linear', 0.6),
+            ('control_rate', 20.0),
+            ('path_topic', '/plan'),
+            ('pose_topic', '/amcl_pose'),
+            ('cmd_topic', '/cmd_vel'),
+            ('scan_topic', '/scan'),
+            ('replan_topic', '/replan'),
+        ]
+        for name, default in defaults:
+            if not self.has_parameter(name):
+                self.declare_parameter(name, default)
 
         self.max_linear_speed = float(
             self.get_parameter('max_linear_speed').value
@@ -66,6 +68,12 @@ class PathFollower(Node):
         )
         self.obstacle_stop_distance = float(
             self.get_parameter('obstacle_stop_distance').value
+        )
+        self.obstacle_clear_distance = float(
+            self.get_parameter('obstacle_clear_distance').value
+        )
+        self.obstacle_turn_speed = float(
+            self.get_parameter('obstacle_turn_speed').value
         )
         self.replan_distance_threshold = float(
             self.get_parameter('replan_distance_threshold').value
@@ -100,6 +108,8 @@ class PathFollower(Node):
         self.last_min_range: Optional[float] = None
         self.last_replan_msg_time = self.get_clock().now()
         self.replan_cooldown = Duration(seconds=1.0)
+        self.state = 'IDLE'  # IDLE, FOLLOWING, OBSTACLE, AT_GOAL
+        self.obstacle_turn_dir = 1.0
 
         self.get_logger().info('Controller listo, esperando plan global.')
 
@@ -119,6 +129,8 @@ class PathFollower(Node):
             self.get_logger().info(
                 f'Recibido plan con {len(self.path_points)} puntos.'
             )
+            if self.state != 'OBSTACLE':
+                self.state = 'FOLLOWING'
 
     def scan_callback(self, msg: LaserScan) -> None:
         valid = [r for r in msg.ranges if math.isfinite(r)]
@@ -130,6 +142,7 @@ class PathFollower(Node):
             return
         if not self.path_points:
             self.cmd_pub.publish(Twist())
+            self.state = 'IDLE'
             return
 
         x, y, yaw = self.current_pose
@@ -139,6 +152,7 @@ class PathFollower(Node):
 
         if dist_goal < self.goal_tolerance and abs(heading_goal) < self.angle_tolerance:
             self.cmd_pub.publish(Twist())
+            self.state = 'AT_GOAL'
             return
 
         nearest_idx, nearest_dist = self.find_nearest_point(x, y)
@@ -152,10 +166,30 @@ class PathFollower(Node):
         heading = wrap_angle(math.atan2(ty - y, tx - x) - yaw)
         target_dist = math.hypot(tx - x, ty - y)
 
-        if self.last_min_range is not None and self.last_min_range < self.obstacle_stop_distance:
-            self.cmd_pub.publish(Twist())
-            self.trigger_replan('Obstaculo cerca')
+        obstacle_close = (
+            self.last_min_range is not None
+            and self.last_min_range < self.obstacle_stop_distance
+        )
+        obstacle_blocking = (
+            self.last_min_range is not None
+            and self.last_min_range < self.obstacle_clear_distance
+        )
+        obstacle_cleared = (
+            self.last_min_range is None
+            or self.last_min_range > self.obstacle_clear_distance
+        )
+
+        if obstacle_close or (self.state == 'OBSTACLE' and obstacle_blocking):
+            if self.state != 'OBSTACLE':
+                self.state = 'OBSTACLE'
+                self.obstacle_turn_dir *= -1.0  # alterna sentido
+                self.trigger_replan('Obstaculo cerca')
+            cmd = Twist()
+            cmd.angular.z = self.obstacle_turn_speed * self.obstacle_turn_dir
+            self.cmd_pub.publish(cmd)
             return
+        if self.state == 'OBSTACLE' and obstacle_cleared:
+            self.state = 'FOLLOWING'
 
         if nearest_dist > self.replan_distance_threshold or abs(heading) > self.replan_angle_threshold:
             self.trigger_replan('Desvio respecto al plan')

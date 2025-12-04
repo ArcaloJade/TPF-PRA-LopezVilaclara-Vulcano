@@ -33,11 +33,11 @@ ros2 run turtlebot3_teleop teleop_keyboard
 
 ```
 source install/setup.bash
-ros2 launch tpf_navigation navigation_launch.py map_yaml:=~/TPF-PRA-LopezVilaclara-Vulcano/maps/generated_map.yaml enable_rviz:=true
+ros2 launch tpf_navigation navigation_launch.py
 ```
 
 En RViz: usar `2D Pose Estimate` para la pose inicial y `2D Goal Pose` para fijar el objetivo. El paquete levanta:
 - `map_loader_node`: publica `/map` desde el YAML/PGM guardado.
 - `localization_node`: filtro de partículas con `/scan` + `calc_odom`.
-- `planner_node`: planeo global A* sobre `/map`.
+- `planner_node`: planeo global A* sobre `/map` (tratando celdas desconocidas como libres).
 - `controller_node`: seguimiento del `Path` y pedido de replanning ante desvíos/obstáculos.
