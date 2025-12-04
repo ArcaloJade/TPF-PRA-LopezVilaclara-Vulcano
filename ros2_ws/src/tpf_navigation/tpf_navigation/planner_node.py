@@ -14,6 +14,7 @@ from geometry_msgs.msg import (
 from geometry_msgs.msg import PointStamped
 from nav_msgs.msg import OccupancyGrid, Path
 from rclpy.node import Node
+from sensor_msgs.msg import LaserScan
 from std_msgs.msg import Bool
 
 
@@ -51,6 +52,9 @@ class AStarPlanner(Node):
             ('dynamic_obstacle_radius', 0.25),
             ('dynamic_obstacle_timeout', 5.0),
             ('dynamic_map_topic', 'dynamic_obstacle_map'),
+            ('scan_topic', '/scan'),
+            ('scan_step', 6),
+            ('max_scan_obstacle_range', 2.5),
         ]
         for name, default in defaults:
             if not self.has_parameter(name):
@@ -70,6 +74,11 @@ class AStarPlanner(Node):
         self.map_topic = str(self.get_parameter('map_topic').value)
         self.path_topic = str(self.get_parameter('path_topic').value)
         self.replan_topic = str(self.get_parameter('replan_topic').value)
+        self.scan_topic = str(self.get_parameter('scan_topic').value)
+        self.scan_step = max(1, int(self.get_parameter('scan_step').value))
+        self.max_scan_obstacle_range = float(
+            self.get_parameter('max_scan_obstacle_range').value
+        )
 
         self.map_data: Optional[np.ndarray] = None
         self.map_info: Optional[Tuple[int, int, float, float, float, str]] = None
@@ -97,6 +106,9 @@ class AStarPlanner(Node):
         self.create_subscription(Bool, self.replan_topic, self.replan_callback, 1)
         self.create_subscription(
             PointStamped, 'dynamic_obstacle', self.dynamic_obstacle_callback, 10
+        )
+        self.create_subscription(
+            LaserScan, self.scan_topic, self.scan_callback, 10
         )
         self.create_timer(self.plan_period, self.timer_callback)
 
@@ -147,6 +159,49 @@ class AStarPlanner(Node):
         # forzar replan inmediato al incorporar obstaculo dinamico
         self.need_plan = True
         self.publish_dynamic_map()
+
+    def scan_callback(self, msg: LaserScan) -> None:
+        """Detecta obstaculos no mapeados y los agrega al overlay dinamico."""
+        if (
+            self.map_info is None
+            or self.map_data is None
+            or self.current_pose is None
+        ):
+            return
+        pose = self.current_pose.pose.pose
+        yaw = yaw_from_quaternion(pose.orientation)
+        x_r = pose.position.x
+        y_r = pose.position.y
+        width, height, res, ox, oy, _ = self.map_info
+        now_s = self.get_clock().now().nanoseconds / 1e9
+        timeout = float(self.get_parameter('dynamic_obstacle_timeout').value)
+
+        added = False
+        for i in range(0, len(msg.ranges), self.scan_step):
+            r = msg.ranges[i]
+            if not math.isfinite(r):
+                continue
+            if r < msg.range_min or r > msg.range_max:
+                continue
+            if r > self.max_scan_obstacle_range:
+                continue
+            angle = yaw + msg.angle_min + i * msg.angle_increment
+            wx = x_r + r * math.cos(angle)
+            wy = y_r + r * math.sin(angle)
+            mx = int((wx - ox) / res)
+            my = int((wy - oy) / res)
+            if mx < 0 or mx >= width or my < 0 or my >= height:
+                continue
+            cell = self.map_data[self.idx(mx, my)]
+            # solo marcamos obstaculos donde el mapa dice libre/desconocido
+            if cell >= self.obstacle_threshold:
+                continue
+            added |= self._add_dynamic_obstacle(wx, wy, now_s + timeout)
+
+        if added:
+            self.dynamic_map_dirty = True
+            self.need_plan = True
+            self.publish_dynamic_map()
 
     def timer_callback(self) -> None:
         if self.dynamic_map_dirty:
@@ -357,6 +412,18 @@ class AStarPlanner(Node):
             for ox, oy, _ in self.dynamic_obstacles:
                 if (cx - ox) ** 2 + (cy - oy) ** 2 <= radius * radius:
                     return False
+        return True
+
+    def _add_dynamic_obstacle(self, x: float, y: float, expiry: float) -> bool:
+        """Agrega obstaculo si no existe ya uno muy cercano; extiende vida si aplica."""
+        radius = float(self.get_parameter('dynamic_obstacle_radius').value)
+        merge_dist2 = (0.5 * radius) ** 2
+        for idx, (ox, oy, t) in enumerate(self.dynamic_obstacles):
+            if (ox - x) ** 2 + (oy - y) ** 2 <= merge_dist2:
+                if expiry > t:
+                    self.dynamic_obstacles[idx] = (ox, oy, expiry)
+                return False
+        self.dynamic_obstacles.append((x, y, expiry))
         return True
 
     def _prune_dynamic_obstacles(self) -> None:

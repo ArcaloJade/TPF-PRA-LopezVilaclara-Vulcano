@@ -31,8 +31,9 @@ planner_node:
     map_topic: /map
     path_topic: /plan
     replan_topic: /replan
-    dynamic_obstacle_radius: 0.45
+    dynamic_obstacle_radius: 0.25
     dynamic_obstacle_timeout: 5.0
+    start_dynamic_ignore_radius: 0.3
 
 map_loader_node:
   ros__parameters:
@@ -44,9 +45,9 @@ map_loader_node:
 controller_node:
   ros__parameters:
     use_sim_time: true
-    max_linear_speed: 0.20
-    max_angular_speed: 1.2
-    lookahead_distance: 0.35
+    max_linear_speed: 0.12
+    max_angular_speed: 0.8
+    lookahead_distance: 0.25
     goal_tolerance: 0.12
     angle_tolerance: 0.25
     obstacle_stop_distance: 0.20

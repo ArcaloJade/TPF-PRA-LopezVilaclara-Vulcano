@@ -19,7 +19,7 @@ def generate_launch_description():
 
     pkg_share = FindPackageShare('tpf_package')
     default_params = PathJoinSubstitution([pkg_share, 'config', 'slam_defaults.yaml'])
-    default_rviz_config = PathJoinSubstitution([pkg_share, 'rviz', 'slam_config.rviz'])
+    default_rviz_config = PathJoinSubstitution([pkg_share, 'rviz', 'slam_config2.rviz'])
 
     return LaunchDescription([
         DeclareLaunchArgument(

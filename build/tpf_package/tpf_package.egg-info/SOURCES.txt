@@ -12,6 +12,7 @@ config/slam_defaults.yaml
 launch/slam_launch.py
 resource/tpf_package
 rviz/slam_config.rviz
+rviz/slam_config2.rviz
 test/test_copyright.py
 test/test_flake8.py
 test/test_pep257.py
