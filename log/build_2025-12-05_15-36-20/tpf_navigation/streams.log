@@ -1,0 +1,35 @@
+[0.305s] Invoking command in '/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/ros2_ws/src/tpf_navigation': AMENT_PREFIX_PATH=/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package:${AMENT_PREFIX_PATH} CONDA_PROMPT_MODIFIER=(rosenv) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_navigation/prefix_override:/home/facuvulcano/miniconda3/envs/rosenv/lib/python3.11/site-packages/colcon_core/task/python/colcon_distutils_commands:/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_navigation/lib/python3.11/site-packages:/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/lib/python3.11/site-packages:${PYTHONPATH} /home/facuvulcano/miniconda3/envs/rosenv/bin/python3.11 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../../build/tpf_navigation build --build-base /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_navigation/build install --record /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_navigation/install.log --single-version-externally-managed install_data
+[0.390s] /home/facuvulcano/miniconda3/envs/rosenv/lib/python3.11/site-packages/setuptools/_distutils/dist.py:289: UserWarning: Unknown distribution option: 'tests_require'
+[0.390s]   warnings.warn(msg)
+[0.418s] running egg_info
+[0.423s] writing ../../../build/tpf_navigation/tpf_navigation.egg-info/PKG-INFO
+[0.423s] writing dependency_links to ../../../build/tpf_navigation/tpf_navigation.egg-info/dependency_links.txt
+[0.423s] writing entry points to ../../../build/tpf_navigation/tpf_navigation.egg-info/entry_points.txt
+[0.423s] writing requirements to ../../../build/tpf_navigation/tpf_navigation.egg-info/requires.txt
+[0.423s] writing top-level names to ../../../build/tpf_navigation/tpf_navigation.egg-info/top_level.txt
+[0.433s] reading manifest file '../../../build/tpf_navigation/tpf_navigation.egg-info/SOURCES.txt'
+[0.434s] writing manifest file '../../../build/tpf_navigation/tpf_navigation.egg-info/SOURCES.txt'
+[0.434s] running build
+[0.434s] running build_py
+[0.434s] copying tpf_navigation/planner_node.py -> /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_navigation/build/lib/tpf_navigation
+[0.443s] copying tpf_navigation/map_loader_node.py -> /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_navigation/build/lib/tpf_navigation
+[0.443s] copying tpf_navigation/controller_node.py -> /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_navigation/build/lib/tpf_navigation
+[0.443s] copying tpf_navigation/localization_node.py -> /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_navigation/build/lib/tpf_navigation
+[0.443s] copying tpf_navigation/__init__.py -> /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_navigation/build/lib/tpf_navigation
+[0.443s] running install
+[0.446s] running install_lib
+[0.450s] running install_data
+[0.450s] copying resource/tpf_navigation -> /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_navigation/share/ament_index/resource_index/packages
+[0.450s] copying package.xml -> /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_navigation/share/tpf_navigation
+[0.450s] copying config/navigation_params.yaml -> /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_navigation/share/tpf_navigation/config
+[0.451s] copying launch/navigation_launch.py -> /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_navigation/share/tpf_navigation/launch
+[0.451s] running install_egg_info
+[0.456s] removing '/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_navigation/lib/python3.11/site-packages/tpf_navigation-0.0.0-py3.11.egg-info' (and everything under it)
+[0.456s] Copying ../../../build/tpf_navigation/tpf_navigation.egg-info to /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_navigation/lib/python3.11/site-packages/tpf_navigation-0.0.0-py3.11.egg-info
+[0.457s] running install_scripts
+[0.487s] Installing controller_node script to /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_navigation/lib/tpf_navigation
+[0.487s] Installing localization_node script to /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_navigation/lib/tpf_navigation
+[0.487s] Installing map_loader_node script to /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_navigation/lib/tpf_navigation
+[0.487s] Installing planner_node script to /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_navigation/lib/tpf_navigation
+[0.487s] writing list of installed files to '/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_navigation/install.log'
+[0.501s] Invoked command in '/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/ros2_ws/src/tpf_navigation' returned '0': AMENT_PREFIX_PATH=/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package:${AMENT_PREFIX_PATH} CONDA_PROMPT_MODIFIER=(rosenv) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_navigation/prefix_override:/home/facuvulcano/miniconda3/envs/rosenv/lib/python3.11/site-packages/colcon_core/task/python/colcon_distutils_commands:/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_navigation/lib/python3.11/site-packages:/home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/lib/python3.11/site-packages:${PYTHONPATH} /home/facuvulcano/miniconda3/envs/rosenv/bin/python3.11 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../../build/tpf_navigation build --build-base /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_navigation/build install --record /home/facuvulcano/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_navigation/install.log --single-version-externally-managed install_data

@@ -40,7 +40,7 @@ class AStarPlanner(Node):
         defaults = [
             ('use_sim_time', False),
             ('obstacle_threshold', 50),
-            ('inflation_radius', 0.15),
+            ('inflation_radius', 0.05),
             ('connect_8', True),
             ('max_search_m', 25.0),
             ('plan_rate', 1.0),
@@ -55,6 +55,8 @@ class AStarPlanner(Node):
             ('scan_topic', '/scan'),
             ('scan_step', 6),
             ('max_scan_obstacle_range', 2.5),
+            ('replan_cooldown', 0.5),
+            ('dynamic_block_margin', 1.5),
         ]
         for name, default in defaults:
             if not self.has_parameter(name):
@@ -79,14 +81,23 @@ class AStarPlanner(Node):
         self.max_scan_obstacle_range = float(
             self.get_parameter('max_scan_obstacle_range').value
         )
+        self.replan_cooldown = float(
+            self.get_parameter('replan_cooldown').value
+        )
+        self.dynamic_block_margin = float(
+            self.get_parameter('dynamic_block_margin').value
+        )
 
         self.map_data: Optional[np.ndarray] = None
         self.map_info: Optional[Tuple[int, int, float, float, float, str]] = None
         self.current_pose: Optional[PoseWithCovarianceStamped] = None
         self.goal_pose: Optional[PoseStamped] = None
+        self.current_path: Optional[Path] = None
         self.need_plan = False
         self.dynamic_obstacles: List[Tuple[float, float, float]] = []  # x, y, expiry
         self.dynamic_map_dirty = False
+        self.last_blocking_signature: Optional[Tuple[Tuple[float, float], ...]] = None
+        self.last_replan_time: float = 0.0
 
         self.path_pub = self.create_publisher(Path, self.path_topic, 1)
         self.dynamic_map_pub = self.create_publisher(
@@ -127,6 +138,7 @@ class AStarPlanner(Node):
             msg.info.origin.position.y,
             msg.header.frame_id or 'map',
         )
+        self.current_path = None
         self.get_logger().info(
             f'Mapa recibido ({msg.info.width}x{msg.info.height})'
         )
@@ -138,7 +150,9 @@ class AStarPlanner(Node):
 
     def goal_callback(self, msg: PoseStamped) -> None:
         self.goal_pose = msg
+        self.current_path = None
         self.need_plan = True
+        self.last_blocking_signature = None
         self.get_logger().info(
             f'Nueva meta: ({msg.pose.position.x:.2f}, '
             f'{msg.pose.position.y:.2f})'
@@ -156,8 +170,10 @@ class AStarPlanner(Node):
         # mantengo lista corta
         self._prune_dynamic_obstacles()
         self.dynamic_map_dirty = True
-        # forzar replan inmediato al incorporar obstaculo dinamico
-        self.need_plan = True
+        if self.path_blocked_by_dynamic_obstacles():
+            self._maybe_request_replan(
+                'Obstaculo dinamico reportado cerca del plan, replan.'
+            )
         self.publish_dynamic_map()
 
     def scan_callback(self, msg: LaserScan) -> None:
@@ -200,7 +216,10 @@ class AStarPlanner(Node):
 
         if added:
             self.dynamic_map_dirty = True
-            self.need_plan = True
+            if self.path_blocked_by_dynamic_obstacles():
+                self._maybe_request_replan(
+                    'Obstaculo en el plan actual, solicitando replan.'
+                )
             self.publish_dynamic_map()
 
     def timer_callback(self) -> None:
@@ -221,7 +240,9 @@ class AStarPlanner(Node):
             self.get_logger().warn('No se pudo generar plan.')
             return
         self.path_pub.publish(path)
+        self.current_path = path
         self.need_plan = False
+        self.last_blocking_signature = None
         self.get_logger().info(
             f'Plan publicado con {len(path.poses)} poses.'
         )
@@ -468,6 +489,48 @@ class AStarPlanner(Node):
     def idx(self, x: int, y: int) -> int:
         width = self.map_info[0] if self.map_info else 0
         return y * width + x
+
+    def dynamic_obstacles_signature(self) -> Tuple[Tuple[float, float], ...]:
+        """Firma simple de obstaculos dinamicos para evitar replan repetidos."""
+        self._prune_dynamic_obstacles()
+        rounded = [(round(ox, 2), round(oy, 2)) for ox, oy, _ in self.dynamic_obstacles]
+        rounded.sort()
+        return tuple(rounded)
+
+    def path_blocked_by_dynamic_obstacles(self) -> bool:
+        """True si algun obstaculo dinamico queda cerca del plan vigente."""
+        self._prune_dynamic_obstacles()
+        if not self.dynamic_obstacles or self.current_path is None:
+            return False
+        if not self.current_path.poses:
+            return False
+
+        radius = float(self.get_parameter('dynamic_obstacle_radius').value)
+        safety_margin = radius * self.dynamic_block_margin
+        margin_sq = safety_margin * safety_margin
+
+        for pose in self.current_path.poses:
+            px = pose.pose.position.x
+            py = pose.pose.position.y
+            for ox, oy, _ in self.dynamic_obstacles:
+                dx = px - ox
+                dy = py - oy
+                if dx * dx + dy * dy <= margin_sq:
+                    return True
+        return False
+
+    def _maybe_request_replan(self, reason: str) -> None:
+        """Activa replan solo si hay cambios relevantes y se respeta el cooldown."""
+        now_s = self.get_clock().now().nanoseconds / 1e9
+        if now_s - self.last_replan_time < self.replan_cooldown:
+            return
+        sig = self.dynamic_obstacles_signature()
+        if sig == self.last_blocking_signature:
+            return
+        self.last_blocking_signature = sig
+        self.last_replan_time = now_s
+        self.need_plan = True
+        self.get_logger().info(reason)
 
 
 def main(args=None) -> None:

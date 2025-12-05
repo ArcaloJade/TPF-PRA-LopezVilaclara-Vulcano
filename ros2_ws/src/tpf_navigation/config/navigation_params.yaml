@@ -3,7 +3,7 @@ localization_node:
     use_sim_time: true
     num_particles: 250
     motion_alphas: [0.15, 0.05, 0.1, 0.05]
-    scan_step: 8
+    scan_step: 12
     hit_bonus: 2.0
     miss_penalty: 1.0
     weight_scale: 0.35
@@ -12,7 +12,7 @@ localization_node:
     initial_std_xy: 0.15
     initial_std_theta: 0.35
     map_frame: map
-    odom_frame: odom
+    odom_frame: calc_odom
     base_frame: base_footprint
     scan_topic: scan
     odom_topic: calc_odom
@@ -22,18 +22,20 @@ planner_node:
   ros__parameters:
     use_sim_time: true
     obstacle_threshold: 50
-    inflation_radius: 0.25
+    inflation_radius: 0.12
     connect_8: true
     max_search_m: 25.0
-    plan_rate: 1.0
+    plan_rate: 0.5
     pose_topic: /amcl_pose
     goal_topic: /goal_pose
     map_topic: /map
     path_topic: /plan
     replan_topic: /replan
-    dynamic_obstacle_radius: 0.25
+    dynamic_obstacle_radius: 0.12
     dynamic_obstacle_timeout: 5.0
     start_dynamic_ignore_radius: 0.3
+    replan_cooldown: 0.8
+    dynamic_block_margin: 1.1
 
 map_loader_node:
   ros__parameters:
