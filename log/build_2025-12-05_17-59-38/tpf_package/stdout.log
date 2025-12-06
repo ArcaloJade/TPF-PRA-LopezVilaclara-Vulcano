@@ -1,0 +1,21 @@
+running egg_info
+writing ../../../build/tpf_package/tpf_package.egg-info/PKG-INFO
+writing dependency_links to ../../../build/tpf_package/tpf_package.egg-info/dependency_links.txt
+writing entry points to ../../../build/tpf_package/tpf_package.egg-info/entry_points.txt
+writing requirements to ../../../build/tpf_package/tpf_package.egg-info/requires.txt
+writing top-level names to ../../../build/tpf_package/tpf_package.egg-info/top_level.txt
+reading manifest file '../../../build/tpf_package/tpf_package.egg-info/SOURCES.txt'
+writing manifest file '../../../build/tpf_package/tpf_package.egg-info/SOURCES.txt'
+running build
+running build_py
+running install
+running install_lib
+running install_data
+running install_egg_info
+removing '/home/alumno1/Documents/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/lib/python3.10/site-packages/tpf_package-0.0.0-py3.10.egg-info' (and everything under it)
+Copying ../../../build/tpf_package/tpf_package.egg-info to /home/alumno1/Documents/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/lib/python3.10/site-packages/tpf_package-0.0.0-py3.10.egg-info
+running install_scripts
+Installing explorer_node script to /home/alumno1/Documents/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/lib/tpf_package
+Installing map_saver_node script to /home/alumno1/Documents/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/lib/tpf_package
+Installing slam_node script to /home/alumno1/Documents/TPF-PRA-LopezVilaclara-Vulcano/install/tpf_package/lib/tpf_package
+writing list of installed files to '/home/alumno1/Documents/TPF-PRA-LopezVilaclara-Vulcano/build/tpf_package/install.log'

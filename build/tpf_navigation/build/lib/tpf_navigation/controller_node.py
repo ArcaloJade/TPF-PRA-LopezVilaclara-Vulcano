@@ -33,6 +33,7 @@ class PathFollower(Node):
             ('lookahead_distance', 0.25),
             ('goal_tolerance', 0.12),
             ('angle_tolerance', 0.25),
+            ('rotate_in_place_angle', 0.35),
             ('obstacle_stop_distance', 0.5),
             ('obstacle_clear_distance', 0.6),
             ('obstacle_turn_speed', 0.4),
@@ -70,6 +71,9 @@ class PathFollower(Node):
         )
         self.angle_tolerance = float(
             self.get_parameter('angle_tolerance').value
+        )
+        self.rotate_in_place_angle = float(
+            self.get_parameter('rotate_in_place_angle').value
         )
         self.obstacle_stop_distance = float(
             self.get_parameter('obstacle_stop_distance').value
@@ -219,6 +223,7 @@ class PathFollower(Node):
         tx, ty, _ = self.path_points[target_idx]
         heading = wrap_angle(math.atan2(ty - y, tx - x) - yaw)
         target_dist = math.hypot(tx - x, ty - y)
+        rotate_only = abs(heading) > self.rotate_in_place_angle
 
         obstacle_close = (
             self.last_min_front is not None
@@ -267,16 +272,20 @@ class PathFollower(Node):
             self.trigger_replan('Desvio respecto al plan')
 
         cmd = Twist()
-        cmd.linear.x = min(
-            self.max_linear_speed,
-            self.k_linear * target_dist * max(0.0, math.cos(heading)),
-        )
+        
         cmd.angular.z = max(
             -self.max_angular_speed,
             min(self.max_angular_speed, self.k_angular * heading),
         )
-        if dist_goal < self.goal_tolerance:
-            cmd.linear.x *= 0.3
+        
+        if not rotate_only:
+            cmd.linear.x = min(
+                self.max_linear_speed,
+                self.k_linear * target_dist * max(0.0, math.cos(heading)),
+            )
+            if dist_goal < self.goal_tolerance:
+                cmd.linear.x *= 0.3
+
         self.cmd_pub.publish(cmd)
 
     def find_nearest_point(self, x: float, y: float) -> Tuple[int, float]:

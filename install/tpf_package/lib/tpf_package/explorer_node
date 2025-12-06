@@ -1,4 +1,4 @@
-#!/home/facuvulcano/miniconda3/envs/rosenv/bin/python3.11
+#!/usr/bin/python3
 # EASY-INSTALL-ENTRY-SCRIPT: 'tpf-package==0.0.0','console_scripts','explorer_node'
 import re
 import sys

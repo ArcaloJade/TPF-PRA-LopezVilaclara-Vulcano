@@ -31,8 +31,8 @@ planner_node:
     map_topic: /map
     path_topic: /plan
     replan_topic: /replan
-    dynamic_obstacle_radius: 0.14
-    dynamic_obstacle_timeout: 5.0
+    dynamic_obstacle_radius: 0.145
+    dynamic_obstacle_timeout: 20.0
     start_dynamic_ignore_radius: 0.3
     replan_cooldown: 0.8
     dynamic_block_margin: 1.1
@@ -52,6 +52,7 @@ controller_node:
     lookahead_distance: 0.25
     goal_tolerance: 0.12
     angle_tolerance: 0.25
+    rotate_in_place_angle: 0.35
     obstacle_stop_distance: 0.20
     obstacle_clear_distance: 0.28
     obstacle_turn_speed: 0.4
